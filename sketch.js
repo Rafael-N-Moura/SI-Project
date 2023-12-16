@@ -58,10 +58,13 @@ function displayGrid() {
   }
 }
 
-// Função para criar o agente
+// Função para criar o agente em uma posição aleatória, evitando obstáculos
 function createAgent() {
-  let x = floor(random(cols));
-  let y = floor(random(rows));
+  let x, y;
+  do {
+    x = floor(random(cols));
+    y = floor(random(rows));
+  } while (grid[x][y].type === 0); // Repete até encontrar uma posição sem obstáculo
   return new Agent(x, y);
 }
 
@@ -151,9 +154,12 @@ class Agent {
   }
 }
 
-// Função para criar a comida em uma posição aleatória
+// Função para criar a comida em uma posição aleatória, evitando obstáculos
 function createFood() {
-  let x = floor(random(cols));
-  let y = floor(random(rows));
+  let x, y;
+  do {
+    x = floor(random(cols));
+    y = floor(random(rows));
+  } while (grid[x][y].type === 0); // Repete até encontrar uma posição sem obstáculo
   return createVector(x, y);
 }
