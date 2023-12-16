@@ -4,7 +4,7 @@ let tileSize = 30;
 
 let agent;
 let food;
-
+let noiseScale = 0.3;
 function setup() {
   createCanvas(600, 600);
   cols = floor(width / tileSize);
@@ -36,14 +36,14 @@ function draw() {
   displayFood();
 }
 
-// Função para criar um grid com terrenos aleatórios
+// Função para criar um grid com terrenos gerados usando Perlin Noise
 function createRandomGrid(cols, rows) {
   let grid = new Array(cols);
   for (let i = 0; i < cols; i++) {
     grid[i] = new Array(rows);
     for (let j = 0; j < rows; j++) {
-      let terrainType = floor(random(4)); // 0: obstáculo, 1: areia, 2: atoleiro, 3: água
-      grid[i][j] = new Terrain(i, j, terrainType);
+      let terrainType = map(noise(i * noiseScale, j * noiseScale), 0, 1, 0, 4); // 0-4 correspondendo aos tipos de terreno
+      grid[i][j] = new Terrain(i, j, floor(terrainType));
     }
   }
   return grid;
