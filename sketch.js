@@ -4,8 +4,170 @@ let tileSize = 30;
 
 let agent;
 let food;
-let noiseScale = 0.3;
-function setup() {
+let noiseScale = 0.45;
+
+
+let frontier = [];
+let came_from = [];
+let path = [];
+
+// function bfs(start, goal) {
+//   frontier.push(start);
+//   came_from[start] = null;
+
+//   while (frontier.length != 0) {
+//     current = frontier.shift();
+
+//     if (current == goal) {
+//       break;
+//     }
+//     nextList = neighbors(current);
+//     print(current);
+//     print(nextList);
+//     for (let i = 0; i < nextList.length; i++) {
+//       if (came_from.indexOf(nextList[i]) == -1) {
+//         frontier.push(nextList[i]);
+//         came_from[nextList[i]] = current;
+//       }
+//     }
+//   }
+
+//   // print(goal);
+//   // print(start);
+//   // print(start == goal);
+//   // print([1, 1] == [1, 1]);
+
+//   // current = goal;
+//   // while (current != start) {
+//   //   //   path.push(current);
+//   //   print(current);
+//   //   current = came_from[current];
+//   // }
+//   // path.push(start);
+//   // path.reverse();
+//   // console.log(path);
+// }
+async function bfs(start, goal) {
+  print("Comeco: ", start)
+  print("Final: ", goal)
+  let frontier = [];
+  frontier.push(start);
+  let came_from = {};
+  came_from[start] = null;
+
+  while (frontier.length > 0) {
+    let current = frontier.shift();
+
+
+    if (current[0] === goal[0] && current[1] === goal[1]) {
+      break;
+    }
+
+    for (let next of neighbors(current)) {
+      if (!(next in came_from)) {
+        frontier.push(next);
+        came_from[next] = current;
+      }
+    }
+    //print(frontier);
+  }
+
+  //print(came_from);
+
+  let current = goal;
+  path = [];
+
+  //print(start)
+  //(goal);
+
+
+  while (current[0] !== start[0] || current[1] !== start[1]) {
+    path.push(current);
+    current = came_from[current];
+  }
+
+  path.push(start); // opcional
+  path.reverse();// opcional
+
+}
+
+async function bfs(start, goal) {
+  print("Comeco: ", start)
+  print("Final: ", goal)
+  let frontier = [];
+  frontier.push(start);
+  let came_from = {};
+  came_from[start] = null;
+
+  while (frontier.length > 0) {
+    let current = frontier.shift();
+
+
+    if (current[0] === goal[0] && current[1] === goal[1]) {
+      break;
+    }
+
+    for (let next of neighbors(current)) {
+      if (!(next in came_from)) {
+        frontier.push(next);
+        came_from[next] = current;
+      }
+    }
+    //print(frontier);
+  }
+
+  //print(came_from);
+
+  let current = goal;
+  path = [];
+
+  //print(start)
+  //(goal);
+
+
+  while (current[0] !== start[0] || current[1] !== start[1]) {
+    path.push(current);
+    current = came_from[current];
+  }
+
+  path.push(start); // opcional
+  path.reverse();// opcional
+
+}
+
+function neighbors(current) {
+  let n = [];
+  //if (grid[current[0] + 1][current[1]].type !== 0) {
+  if (current[0] + 1 <= 19 && grid[current[0] + 1][current[1]].type !== 0) {
+    n.push([current[0] + 1, current[1]]);
+  }
+
+
+  //}
+  //if (grid[current[0] - 1][current[1]]<Terrain>.type != 0) {
+  if (current[0] - 1 >= 0 && grid[current[0] - 1][current[1]].type !== 0) {
+    n.push([current[0] - 1, current[1]]);
+  }
+
+  //}
+  //if (grid[current[0]][current[1] + 1].type != 0) {
+  if (current[1] + 1 <= 19 && grid[current[0]][current[1] + 1].type !== 0) {
+    n.push([current[0], current[1] + 1]);
+  }
+
+  //}
+  //if (grid[current[0]][current[1] - 1].type != 0) {
+  if (current[1] - 1 >= 0 && grid[current[0]][current[1] - 1].type !== 0) {
+    n.push([current[0], current[1] - 1]);
+  }
+
+  //}
+  return n;
+}
+
+
+
+async function setup() {
   createCanvas(600, 600);
   cols = floor(width / tileSize);
   rows = floor(height / tileSize);
@@ -18,6 +180,8 @@ function setup() {
 
   // Inicializa a comida em uma posição aleatória
   food = createFood();
+
+  let x = await bfs([agent.x, agent.y], [food.x, food.y]);
 }
 
 function draw() {
@@ -54,6 +218,12 @@ function displayGrid() {
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
       grid[i][j].display();
+      for (let cord of path) {
+        if (cord[0] === i && cord[1] === j) {
+          grid[i][j].displayPath();
+        }
+      }
+
     }
   }
 }
@@ -117,6 +287,22 @@ class Terrain {
     } else {
       fill("#0000ff"); // Água (azul)
       noStroke();
+      rect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
+    }
+  }
+
+  displayPath() {
+    if (this.type === 1) {
+      fill("#ffd700"); // Areia (amarelo)
+      stroke("#FF0000");
+      rect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
+    } else if (this.type === 2) {
+      fill("#8b4513"); // Atoleiro (marrom)
+      stroke("#FF0000");
+      rect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
+    } else {
+      fill("#0000ff"); // Água (azul)
+      stroke("#FF0000");
       rect(this.x * tileSize, this.y * tileSize, tileSize, tileSize);
     }
   }
