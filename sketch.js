@@ -5,7 +5,7 @@ let tileSize = 30;
 let agent;
 let food;
 let foodCounter = 0;
-let noiseScale = 0.45;
+let noiseScale = 0.5;
 
 let isSearching = true;
 let exploredCells = [];
@@ -429,7 +429,7 @@ function createRandomGrid(cols, rows) {
   for (let i = 0; i < cols; i++) {
     grid[i] = new Array(rows);
     for (let j = 0; j < rows; j++) {
-      let terrainType = map(noise(i * noiseScale, j * noiseScale), 0, 1, 0, 4); // 0-4 correspondendo aos tipos de terreno
+      let terrainType = map(noise(i * noiseScale, j * noiseScale), 0, 1, 0, 5); // 0-4 correspondendo aos tipos de terreno
       grid[i][j] = new Terrain(i, j, floor(terrainType));
     }
   }
