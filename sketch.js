@@ -25,7 +25,7 @@ function highlightExploredCells() {
 
     // Conditional stroke for ongoing search
     if (isSearching) {
-      stroke(0, 0, 255); // Blue stroke during the search phase
+      stroke(169, 169, 169); // Blue stroke during the search phase
       strokeWeight(2);
     }
 
@@ -37,7 +37,7 @@ function highlightExploredCells() {
 }
 
 function getTerrainCost(terrainType) {
-  console.log({terrainType});
+  console.log({ terrainType });
   switch (terrainType) {
     case 1:
       return 1; // Cost for type 1
@@ -311,41 +311,41 @@ async function setup() {
   // Inicializa a comida em uma posição aleatória
   food = createFood();
 
-    // Create buttons for search functions
-    let bfsButton = createButton('BFS');
-    bfsButton.position(610, 60);
-    bfsButton.mousePressed(async() => {
-      searchFunction = 'bfs';
-      resetAgentAndFood();
-    });
-  
-    let dfsButton = createButton('DFS');
-    dfsButton.position(610, 90);
-    dfsButton.mousePressed(async () => {
-      searchFunction = 'dfs';
-      resetAgentAndFood();
-    });
-  
+  // Create buttons for search functions
+  let bfsButton = createButton('BFS');
+  bfsButton.position(610, 60);
+  bfsButton.mousePressed(async () => {
+    searchFunction = 'bfs';
+    resetAgentAndFood();
+  });
+
+  let dfsButton = createButton('DFS');
+  dfsButton.position(610, 90);
+  dfsButton.mousePressed(async () => {
+    searchFunction = 'dfs';
+    resetAgentAndFood();
+  });
+
   let ucsButton = createButton('UCS');
   ucsButton.position(610, 120);
   ucsButton.mousePressed(async () => {
     searchFunction = 'ucs';
     resetAgentAndFood();
-  }); 
-  
+  });
+
   let greedySearchButton = createButton('Greedy Search');
   greedySearchButton.position(610, 150);
   greedySearchButton.mousePressed(async () => {
     searchFunction = 'greedySearch';
     resetAgentAndFood();
-  }); 
+  });
 
   let aStarButton = createButton('A*');
   aStarButton.position(610, 180);
   aStarButton.mousePressed(async () => {
     searchFunction = 'aStar';
     resetAgentAndFood();
-  }); 
+  });
 
   await searchProcess(searchFunction);
 }
@@ -367,7 +367,7 @@ async function draw() {
 
   // Verifica se o agente alcançou a comida
   await agent.eat();
-  
+
   // Exibe o contador de comidas na tela
   fill(0);
   textSize(20);
@@ -383,7 +383,7 @@ async function draw() {
 }
 
 async function searchProcess(searchFunction) {
-  console.log({searchFunction});
+  console.log({ searchFunction });
   // Reinicia o processo de busca
   switch (searchFunction) {
     case 'bfs':
@@ -573,37 +573,37 @@ class Agent {
     this.acc.set(0, 0);
   }
 
- // Função para mover o agente
-move() {
-  // Verifica se há um caminho disponível para a comida
-  if (path.length > 0) {
-    // Obtém a próxima posição no caminho
-    let nextPosition = path[0];
+  // Função para mover o agente
+  move() {
+    // Verifica se há um caminho disponível para a comida
+    if (path.length > 0) {
+      // Obtém a próxima posição no caminho
+      let nextPosition = path[0];
 
-    // Verifica o tipo de terreno da próxima posição
-    let nextTerrainType = grid[nextPosition[0]][nextPosition[1]].type;
+      // Verifica o tipo de terreno da próxima posição
+      let nextTerrainType = grid[nextPosition[0]][nextPosition[1]].type;
 
-    // Define a velocidade com base no tipo de terreno
-    let speed = 0.1; // Velocidade padrão
-    if (nextTerrainType === 2) {
-      speed = 0.05; // Atoleiro (velocidade reduzida)
-    } else if (nextTerrainType === 3) {
-      speed = 0.025; // Água (velocidade reduzida)
-    }
+      // Define a velocidade com base no tipo de terreno
+      let speed = 0.1; // Velocidade padrão
+      if (nextTerrainType === 2) {
+        speed = 0.05; // Atoleiro (velocidade reduzida)
+      } else if (nextTerrainType === 3) {
+        speed = 0.025; // Água (velocidade reduzida)
+      }
 
-    // Move o agente em direção à próxima posição no caminho
-    this.seek(createVector(nextPosition[0], nextPosition[1]), speed);
+      // Move o agente em direção à próxima posição no caminho
+      this.seek(createVector(nextPosition[0], nextPosition[1]), speed);
 
-    // Atualiza a energia do agente com base na velocidade
-    this.energy -= speed;
+      // Atualiza a energia do agente com base na velocidade
+      this.energy -= speed;
 
-    // Verifica se o agente chegou próximo o suficiente à posição intermediária
-    if (dist(this.pos.x, this.pos.y, nextPosition[0], nextPosition[1]) <= 1 ) {
-      // Remove a próxima posição do caminho
-      path.shift();
+      // Verifica se o agente chegou próximo o suficiente à posição intermediária
+      if (dist(this.pos.x, this.pos.y, nextPosition[0], nextPosition[1]) <= 1) {
+        // Remove a próxima posição do caminho
+        path.shift();
+      }
     }
   }
-}
 
   // Função para exibir o agente
   display() {
@@ -616,25 +616,25 @@ move() {
     );
   }
 
-// Função para verificar se o agente alcançou a comida
-async eat() {
-  // Calcula a distância entre a posição do agente e a posição da comida
-  let distance = dist(this.pos.x, this.pos.y, food.x, food.y);
+  // Função para verificar se o agente alcançou a comida
+  async eat() {
+    // Calcula a distância entre a posição do agente e a posição da comida
+    let distance = dist(this.pos.x, this.pos.y, food.x, food.y);
 
-  // Verifica se a distância é menor ou igual a 1
-  if (distance <= 1) {
-    // Se a distância for menor ou igual a 1, o agente pode comer a comida
+    // Verifica se a distância é menor ou igual a 1
+    if (distance <= 1) {
+      // Se a distância for menor ou igual a 1, o agente pode comer a comida
 
-    // Remove a comida do terreno
-    grid[food.x][food.y].type = 1; // Define o tipo de terreno como "areia" (ou qualquer outro tipo adequado)
-    // Remove o stroke da comida
-    noStroke();
+      // Remove a comida do terreno
+      grid[food.x][food.y].type = 1; // Define o tipo de terreno como "areia" (ou qualquer outro tipo adequado)
+      // Remove o stroke da comida
+      noStroke();
 
-   // Incrementa o contador de comidas
-    foodCounter++;
-    await resetAgentAndFood();
+      // Incrementa o contador de comidas
+      foodCounter++;
+      await resetAgentAndFood();
+    }
   }
-}
 }
 
 class PriorityQueue {
