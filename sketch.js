@@ -16,28 +16,27 @@ let path = [];
 
 let searchFunction = 'bfs'; // Default search function
 
-function highlightExploredCells() {
+async function highlightExploredCells() {
   for (let cell of exploredCells) {
-    let i = cell[0];
-    let j = cell[1];
-    fill(200, 200, 200, 50); // Set a semi-transparent gray color for explored cells
-    noStroke();
+      let i = cell[0];
+      let j = cell[1];
+      fill(200, 255, 200, 100); // Set a semi-transparent gray color for explored cells
+      noStroke();
 
-    // Conditional stroke for ongoing search
-    if (isSearching) {
-      stroke(169, 169, 169); // Blue stroke during the search phase
-      strokeWeight(2);
-    }
+      // Conditional stroke for ongoing search
+      if (isSearching) {
+        stroke(169, 169, 169); // Blue stroke during the search phase
+        strokeWeight(2);
+      }
 
-    rect(i * tileSize, j * tileSize, tileSize, tileSize);
+      rect(i * tileSize, j * tileSize, tileSize, tileSize);
 
-    // Reset stroke settings after drawing the cell
-    noStroke();
+      // Reset stroke settings after drawing the cell
+      noStroke();
   }
 }
 
 function getTerrainCost(terrainType) {
-  console.log({ terrainType });
   switch (terrainType) {
     case 1:
       return 1; // Cost for type 1
@@ -59,7 +58,7 @@ async function bfs(start, goal) {
   let came_from = {};
   came_from[start] = null;
 
-  while (frontier.length > 0) {
+  while (frontier.length > 0 ) {
     let current = frontier.shift();
 
     if (current[0] === goal[0] && current[1] === goal[1]) {
@@ -69,7 +68,7 @@ async function bfs(start, goal) {
     exploredCells.push(current);
 
     for (let next of neighbors(current)) {
-      if (!(next in came_from)) {
+      if (!(next in came_from) ) {
         frontier.push(next);
         came_from[next] = current;
       }
@@ -101,7 +100,7 @@ async function dfs(start, goal) {
   let came_from = {};
   came_from[start] = null;
 
-  while (stack.length > 0) {
+  while (stack.length > 0 ) {
     let current = stack.pop();
 
     if (current[0] === goal[0] && current[1] === goal[1]) {
@@ -111,7 +110,7 @@ async function dfs(start, goal) {
     exploredCells.push(current);
 
     for (let next of neighbors(current)) {
-      if (!(next in came_from)) {
+      if (!(next in came_from) ) {
         stack.push(next);
         came_from[next] = current;
       }
@@ -145,7 +144,7 @@ async function ucs(start, goal) {
   came_from[start] = null;
   cost_so_far[start] = 0;
 
-  while (!priorityQueue.isEmpty()) {
+  while (!priorityQueue.isEmpty() ) {
     let current = priorityQueue.dequeue();
 
     if (current[0] === goal[0] && current[1] === goal[1]) {
@@ -155,7 +154,7 @@ async function ucs(start, goal) {
 
     for (let next of neighbors(current)) {
       let newCost = cost_so_far[current] + getTerrainCost(grid[current[0]][current[1]].type);
-      if (!(next in came_from) || newCost < cost_so_far[next]) {
+      if (!(next in came_from) || newCost < cost_so_far[next] ) {
         exploredCells.push(next);
         cost_so_far[next] = newCost;
         priorityQueue.enqueue(next, newCost);
@@ -182,7 +181,7 @@ async function ucs(start, goal) {
   isSearching = false;
 }
 
-async function heuristic(node, goal) {
+async function heuristic(node, goal) { //distancia de manhattan
   return abs(node[0] - goal[0]) + abs(node[1] - goal[1]);
 }
 
@@ -194,7 +193,7 @@ async function greedySearch(start, goal) {
   let came_from = {};
   came_from[start] = null;
 
-  while (!priorityQueue.isEmpty()) {
+  while (!priorityQueue.isEmpty() ) {
     let current = priorityQueue.dequeue();
 
     if (current[0] === goal[0] && current[1] === goal[1]) {
@@ -203,7 +202,7 @@ async function greedySearch(start, goal) {
 
 
     for (let next of neighbors(current)) {
-      if (!(next in came_from)) {
+      if (!(next in came_from) ) {
         exploredCells.push(next);
         priorityQueue.enqueue(next, heuristic(next, goal) + getTerrainCost(grid[next[0]][next[1]].type));
         came_from[next] = current;
@@ -239,7 +238,7 @@ async function aStar(start, goal) {
   came_from[start] = null;
   cost_so_far[start] = 0;
 
-  while (!priorityQueue.isEmpty()) {
+  while (!priorityQueue.isEmpty() ) {
     let current = priorityQueue.dequeue();
 
     if (current[0] === goal[0] && current[1] === goal[1]) {
@@ -249,7 +248,7 @@ async function aStar(start, goal) {
 
     for (let next of neighbors(current)) {
       let newCost = cost_so_far[current] + getTerrainCost(grid[current[0]][current[1]].type);
-      if (!(next in cost_so_far) || newCost < cost_so_far[next]) {
+      if (!(next in cost_so_far) || newCost < cost_so_far[next] ) {
         exploredCells.push(next);
         cost_so_far[next] = newCost;
         let priority = newCost + heuristic(next, goal) + getTerrainCost(grid[next[0]][next[1]].type);
@@ -378,11 +377,11 @@ async function draw() {
   if (!isSearching) {
     agent.move();
   }
-
-  highlightExploredCells();
+    highlightExploredCells();
 }
 
 async function searchProcess(searchFunction) {
+  isSearching = false;
   console.log({ searchFunction });
   // Reinicia o processo de busca
   switch (searchFunction) {
